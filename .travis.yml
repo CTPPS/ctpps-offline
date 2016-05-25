@@ -11,6 +11,11 @@ env:
   - DOCKER_IMAGE=grzanka/cmssw_810:pre4 CMSSW_VER=CMSSW_8_1_0_pre4
   - DOCKER_IMAGE=grzanka/cmssw_810:pre3 CMSSW_VER=CMSSW_8_1_0_pre3
 
+# here we can define the sub-builds which can fail (and won't mark whole build as failed)
+matrix:
+    allow_failures:
+        - env: DOCKER_IMAGE=grzanka/cmssw_810:pre3 CMSSW_VER=CMSSW_8_1_0_pre3
+
 language: bash
 
 services:
