@@ -6,18 +6,23 @@ dist: trusty
 services:
   - docker
 
+# matrix build
+env:
+  - DOCKER_IMAGE=grzanka/cmssw_810:pre4 CMSSW_VER=CMSSW_8_1_0_pre4
+  - DOCKER_IMAGE=grzanka/cmssw_810:pre3 CMSSW_VER=CMSSW_8_1_0_pre3
+
 language: bash
 
 services:
   - docker
 
 before_install:
-  - docker pull grzanka/cmssw_810:pre4
+  - docker pull $DOCKER_IMAGE
   - curl -J -o sample.root "https://cernbox.cern.ch/index.php/s/WUQIFkrR8auOHDn/download"
   - md5sum sample.root
 
 script:
-  - docker run --rm -v `pwd`:/home/cmsbuild/src -it grzanka/cmssw_810:pre4 /bin/sh -c "cp -r src/* CMSSW_8_1_0_pre4/src && chown -R cmsbuild:cmsbuild CMSSW_8_1_0_pre4 && cd CMSSW_8_1_0_pre4/src && bash test.sh"
+  - docker run --rm -v `pwd`:/home/cmsbuild/src -it $DOCKER_IMAGE /bin/sh -c "cp -r src/* $CMSSW_VER/src && chown -R cmsbuild:cmsbuild $CMSSW_VER && cd $CMSSW_VER/src && bash test.sh"
 
 notifications:
   email:
