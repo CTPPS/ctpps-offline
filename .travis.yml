@@ -1,7 +1,7 @@
 sudo: required
 dist: trusty
 
-# travis-ci runs by default on ancient Ubuntu 12.04 (precise), with support until XXX
+# travis-ci runs by default on ancient Ubuntu 12.04 (precise), with support until 04.2017
 # following options will give us Ubuntu 14.04 (trusty)
 services:
   - docker
@@ -9,12 +9,12 @@ services:
 # matrix build
 env:
   - DOCKER_IMAGE=grzanka/cmssw_810:pre4 CMSSW_VER=CMSSW_8_1_0_pre4
-  - DOCKER_IMAGE=grzanka/cmssw_810:pre3 CMSSW_VER=CMSSW_8_1_0_pre3
+  - DOCKER_IMAGE=grzanka/cmssw_810:pre5 CMSSW_VER=CMSSW_8_1_0_pre5
 
 # here we can define the sub-builds which can fail (and won't mark whole build as failed)
 matrix:
     allow_failures:
-        - env: DOCKER_IMAGE=grzanka/cmssw_810:pre3 CMSSW_VER=CMSSW_8_1_0_pre3
+        - env: DOCKER_IMAGE=grzanka/cmssw_810:pre5 CMSSW_VER=CMSSW_8_1_0_pre5
 
 language: bash
 
