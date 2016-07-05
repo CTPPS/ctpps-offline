@@ -13,6 +13,8 @@
 
 #include "DataFormats/FEDRawData/interface/FEDRawDataCollection.h"
 
+#include "TotemRawData/Readers/interface/StorageFile.h"
+
 #include <vector>
 #include <cstdio>
 
@@ -63,7 +65,7 @@ protected:
     unsigned int dataPtrSize;
  
  	/// input file pointer
- 	FILE *infile;
+ 	Totem::StorageFile *infile;
 };
 
 #endif

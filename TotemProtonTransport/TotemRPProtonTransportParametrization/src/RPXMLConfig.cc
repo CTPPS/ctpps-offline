@@ -29,11 +29,14 @@ RPXMLConfig::RPXMLConfig ()
     DOMImplementationRegistry::getDOMImplementation (tempStr);
   this->parser =
     ((DOMImplementationLS *) impl)->
-    createDOMBuilder (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
-  this->writer = ((DOMImplementationLS *) impl)->createDOMWriter ();
+    createLSParser (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 
-  if (this->writer->canSetFeature (XMLUni::fgDOMWRTFormatPrettyPrint, true))
-    this->writer->setFeature (XMLUni::fgDOMWRTFormatPrettyPrint, true);
+  this->serializer = ((DOMImplementationLS *) impl)->createLSSerializer ();
+  DOMConfiguration* dc = this->serializer->getDomConfig();
+  dc->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+
+  this->outputDesc = ((DOMImplementationLS*)impl)->createLSOutput();
+
 
   this->doc = 0;
 
@@ -68,7 +71,8 @@ void
 RPXMLConfig::save (const std::string filename)
 {
   XMLFormatTarget *myForm = new StdOutFormatTarget ();
-  writer->writeNode (myForm, *doc);
+  outputDesc->setByteStream(myForm);
+  serializer->write(doc, outputDesc);
 }
 
 void

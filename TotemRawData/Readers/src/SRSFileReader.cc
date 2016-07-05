@@ -16,6 +16,7 @@
 //----------------------------------------------------------------------------------------------------
 
 using namespace std;
+using namespace Totem;
 
 //----------------------------------------------------------------------------------------------------
 
@@ -41,11 +42,12 @@ SRSFileReader::~SRSFileReader()
 
 int SRSFileReader::Open(const std::string &fn)
 {
-  infile = fopen(fn.c_str(), "r");
+  infile = StorageFile::CreateInstance(fn);
+  infile->OpenFile();
 
-  if (infile == NULL)
+  if (!infile->IsOpened())
   {
-    perror("Error while opening file in SRSFileReader::Open");
+    infile->PrintError("Error while opening file in SRSFile::Open");
     return 1;
   }
 
@@ -57,8 +59,9 @@ int SRSFileReader::Open(const std::string &fn)
 void SRSFileReader::Close()
 {
   if (infile)
-    fclose(infile);
+    infile->CloseFile();
 
+  delete infile;
   infile = NULL;
 }
 
@@ -96,8 +99,8 @@ unsigned char SRSFileReader::ReadToBuffer(unsigned int bytesToRead, unsigned int
   }
 
   // read data at given offset
-  unsigned int bytesRead = fread(dataPtr + offset, sizeof(char), bytesToRead, infile);
-  int eofFlag = feof(infile);
+  unsigned int bytesRead = infile->ReadData(dataPtr + offset, sizeof(char), bytesToRead);
+  int eofFlag = infile->CheckEOF();
 
   if (bytesRead != bytesToRead && !(bytesRead == 0 && eofFlag)) 
   {
@@ -119,7 +122,7 @@ unsigned char SRSFileReader::GetNextEvent(uint64_t &timestamp, FEDRawDataCollect
 
   eventHeaderStruct *eventHeader = NULL;
 
-  while (!feof(infile))
+  while (!infile->CheckEOF())
   {
     // read next header
     if (ReadToBuffer(eventHeaderSize, 0) != 0)
@@ -158,7 +161,7 @@ unsigned char SRSFileReader::GetNextEvent(uint64_t &timestamp, FEDRawDataCollect
   }
 
   // check if the end of the file has been reached
-  if (feof(infile))
+  if (infile->CheckEOF())
     return 1;
 
   // process the buffer

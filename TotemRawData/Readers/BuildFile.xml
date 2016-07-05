@@ -2,6 +2,12 @@
 
 <use name="EventFilter/TotemRawToDigi"/>
 
+<use name="castor"/>
+<use name="castor_header"/>
+<use name="xrootd"/>
+
+<flags cxxflags="-O3 -g3 -lXrdPosix -lXrdPosixPreload"/>
+
 <export>
 	<lib name="1"/>
 </export>
